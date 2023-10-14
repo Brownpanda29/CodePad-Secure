@@ -1,9 +1,10 @@
 import sys
 import requests
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QMenu, QAction, QMessageBox, QStackedWidget, QPushButton, QTextBrowser, QVBoxLayout, QWidget
-import base64
-import codecs
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QMenu, QAction, QMessageBox, QTextBrowser, QVBoxLayout, QWidget, QPushButton
+from base64 import b64encode
+from codecs import encode
 from pydracula import DraculaStyle
+import chardet
 
 def apply_dracula_theme():
     app.setStyleSheet(DraculaStyle().get_stylesheet())
@@ -17,12 +18,12 @@ def identify_encoding():
 
 def convert_base64():
     selected_text = text_edit.textCursor().selectedText()
-    base64_text = base64.b64encode(selected_text.encode()).decode()
+    base64_text = b64encode(selected_text.encode()).decode()
     replace_selected_text(base64_text)
 
 def convert_rot13():
     selected_text = text_edit.textCursor().selectedText()
-    rot13_text = codecs.encode(selected_text, 'rot_13')
+    rot13_text = encode(selected_text, 'rot_13')
     replace_selected_text(rot13_text)
 
 def convert_hex():
@@ -65,6 +66,22 @@ def create_new_response_window(response_text):
     response_window.setWindowTitle("URL Response")
     response_window.show()
 
+def convert_to_lowercase():
+    selected_text = text_edit.textCursor().selectedText()
+    if selected_text.isalpha():
+        lowercase_text = selected_text.lower()
+        replace_selected_text(lowercase_text)
+    else:
+        show_message("Oops! Wrong data", "Selected text must contain only alphabetic characters for case conversion.")
+
+def convert_to_uppercase():
+    selected_text = text_edit.textCursor().selectedText()
+    if selected_text.isalpha():
+        uppercase_text = selected_text.upper()
+        replace_selected_text(uppercase_text)
+    else:
+        show_message("Oops! Wrong data", "Selected text must contain only alphabetic characters for case conversion.")
+
 app = QApplication(sys.argv)
 window = QMainWindow()
 text_edit = QTextEdit()
@@ -96,8 +113,21 @@ run_url_action = QAction("Run URL", window)
 run_url_action.triggered.connect(run_url)
 context_menu.addAction(run_url_action)
 
+# New "Extras" submenu
+extras_menu = QMenu("Extras", window)
+context_menu.addMenu(extras_menu)
+
+lowercase_action = QAction("Convert to Lowercase", window)
+lowercase_action.triggered.connect(convert_to_lowercase)
+extras_menu.addAction(lowercase_action)
+
+uppercase_action = QAction("Convert to Uppercase", window)
+uppercase_action.triggered.connect(convert_to_uppercase)
+extras_menu.addAction(uppercase_action)
+
 text_edit.setContextMenuPolicy(3)  # This sets the context menu policy to CustomContextMenu
 text_edit.customContextMenuRequested.connect(lambda x: context_menu.popup(text_edit.mapToGlobal(x)))
 
 window.show()
 sys.exit(app.exec_())
+    
