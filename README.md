@@ -1,0 +1,3 @@
+# CodePad-Secure
+This text editor is designed to provide a seamless and efficient text editing experience with a range of useful features. Users can easily identify text encodings, convert selected text to different encodings (such as Base64, ROT13, and Hex), and even run URLs with real-time response viewing in dedicated windows. The application is built on PyQt and uses the Dracula theme to provide a sleek and dark user interface. In the future, we plan to expand the functionality of this editor by introducing a custom encoding system, allowing users to define and apply their own text encodings. This project aims to provide a versatile text editing environment tailored to the needs of users who demand more than just the basics.
+
